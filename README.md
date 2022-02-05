@@ -55,51 +55,53 @@ pip install -r requirements.txt
 
 ## A brief overview of construction of our code
 
-- calc_hyper_param.py
-    - main code for calculating the hyperparameter of GP
-- run_example.py and run_experimental_setting.py
-    - main code for stopping specral measurements
-- plot_example.py, plot_animation.py and plot_experimental_result.py
-    - main code for visualization
-- core
+- `calc_hyper_param.py`
+    - main code for calculating the hyperparameter of GP.
+- `run_example.py` and `run_experimental_setting.py`
+    - main code for stopping specral measurements.
+- `plot_example.py`, `plot_animation.py` and `plot_experimental_result.py`
+    - main code for visualization.
+- `core`
     - codes defining active learning with GP and its stopping criterion.
-- utils
-    - utilities for accessing to dataset and result, plot results and calculation some statistics are defined.
-- dataset
+- `utils`
+    - utilities for accessing to dataset and result, plotting results and calculating some statistics are defined.
+- `dataset`
     - spectrum dataset are placed.
-- param
-    - hyperparameter of GP caclulated by calc_hyper_param.py are placed.
+- `param`
+    - hyperparameter of GP caclulated by `calc_hyper_param.py` are placed.
 
 ## Usage
 
 - Reproducing the experimental result of our article.
-    - You can reproduce the result by executing run_experimental_setting.py after you executing calc_hyper_param.py.
-    - The figures of our article is reproduced by executing the run_experimental_setting.py.
-    - The animation of active learning can be reproduced by executing the plot_animation.py.
+    - You can reproduce the result by executing `run_experimental_setting.py` after executing `calc_hyper_param.py`.
+    - The figures of our article is reproduced by executing the `run_experimental_setting.py`.
+    - The animation of active learning can be reproduced by executing the `plot_animation.py`.
 
 - Applying the code to other dataset.
-    - 能動学習はcore.active_learningのALで実装されており，ALクラスの引数はscikit learnのGPの引数に加え，学習データのプールデータ，初期サンプルサイズ，stopping_criteria，獲得関数の種類を必要としている．
-        - stopping_criteriaはcore.stopping_criteria.pyで定義されたクラスのインスタンスのリスト．
-        - isEarlystoppingは停止基準を使って早期停止するかどうかのフラグ．Trueなら停止条件を満たしたら早期停止し，Falseなら停止条件を満たしても早期停止しない．停止基準のリストが複数個あった場合，全ての条件を満たす時に学習を停止する．通常は停止基準の数は１つを推奨．
-        - 獲得関数は分散最大化基準（acq_func_type="max_var"）と論文で用いているadaptiveな獲得関数（acq_func_type="adaptive"）の２種類が実装されている．acq_func_typeを"max_var"と"adaptive"以外にするとランダム探索になる．
-        - GP of scikit learn is denoted [here](https://scikit-learn.org/stable/modules/generated/sklearn.gaussian_process.GaussianProcessRegressor.html).
-    - 能動学習の探索はALクラスのexplore関数で行える．explore関数はあらかじめ与えられたbudgetを引数としている．
-    - 能動学習の過程でGPのハイパーパラメータも周辺尤度最大化により推定することができる．ただし，停止基準の停止タイミングが不安定になりやすいため，あらかじめハイパーパラメータを決めておく方法を推奨. 
-        - ハイパーパラメータが異なるGP間のKLダイバージェンスは厳密には計算できないが，このコードではGPのハイパーパラメータも逐次推定するときは更新されたハイパーパラメータを使ってGP間のKLダイバージェンスを近似的に計算している．具体的には，新しくデータを取得しGPのハイパーパラメータを更新した後，そのハイパーパラメータを用いてデータを取得する前後の事後分布を再度計算し直し，その事後分布間のKLダイバージェンスを使って停止基準を計算している．
+    - Active learning is implemented as `core.active_learning.AL`, whose arguments `pool_data`, `initial_sample_size`, `stopping_criteria`, `acq_funcition_type` and `isEarlystopping` in addition to the arguments of Gaussian process regressor of scikit-learn.
+        - scikit-learn's GP can be seen [here](https://scikit-learn.org/stable/modules/generated/sklearn.gaussian_process.GaussianProcessRegressor.html).
+        - `pool_data` is a list of training input and output.
+        - `stopping_criteria` is a list of instances defined by `core.stopping_criteria.py`.
+        - `isEarlystopping` is a flag whether to stop early the active learning. If it is `True`, the active learning is stopped when satisfying the stopping conditions. Otherwise, the active learning is not stopped. When `stopping_criteria` has mulitple stopping critrion, the active learning is stopped when satisfying the all conditions, but we recommend that the number of stopping criteria is one.
+        - Possible value of `acq_func_type` is `"max_var"` or `"adaptive"`. When `acq_func_type="max_var"`, the acquisition function becomes maximum variance criterion. When `acq_func_type="adaptive"`, the acqusition function becomes the adaptive acquisition function used for our article. Other than that, next sample is selected randomly.
+    - Active learning is executed by `explore`, whose argument is pre-determined budget.
+    - In our code, the hyperparameter of GP can be estimated as a option, but we recommend using predetermined hyperparameter since this method tends to make the stop timing unstable.
+        - KL divergence between GPs with different hyperparameters cannot be calculated exactly. So we calculate an approximated KL-divergence instead of the exact KL-divergence. Specifically, let $\theta_t$ and $p_t(f | \rho)$ be a hyperparamter of GP posterior at time $t$ and GP posterior with hyperparameter $\rho$ at time $t$, respectively. In our code, we calculate $D_{\rm KL}[p_t(f|\rho_t)||p_{t-1}(f|\rho_t)]$ and $D_{\rm KL}[p_{t-1}(f|\rho_t)||p_t(f|\rho_t)]$ instead of $D_{\rm KL}[p_t(f|\rho_t)||p_{t-1}(f|\rho_{t-1})]$ and $D_{\rm KL}[p_{t-1}(f|\rho_{t-1})||p_t(f|\rho_t)]$.
 
 - Stopping criterion
-    - 停止基準のクラスはcore.stopping_criteria.pyに定義されている．
-    - 実装されている停止基準はerror_stability_criterionとerror_stability_criterion_lambertの２つの停止基準がある．
-        - ２つの停止基準の違いは期待汎化誤差の差分の上界の違いであり，error_stability_criterion_lambertはランベルト関数を用いた上界に基づく停止基準であり，error_stability_criterionはPinskerの不等式に基づく停止基準である． 
-        - 論文ではランベルト関数を用いた上界を実験で用いていたがPinskerの不等式に基づく上界がよりタイトな上界になるため実際の運用ではerror_stability_criterionを用いることを推奨．
-    - 停止基準の計算と停止条件を満たしたかどうかの判定はcheck_threshold関数によって行う．
-    - calcR_min関数はKLダイバージェンスの最小値を計算している関数であり，停止基準には影響を与えない．
+    - The implemented stopping criteria are `error_stability_criterion` and `error_stability_criterion_lambert`.
+        - The difference of the two criteria is the upper bound of the gap between expected generalization errors. While `error_stability_criterion_lambert` calculates the upper bound by using the lambert function, `error_stability_criterion` calculates the upper bound by using Pinsker's inequality.
+            - Pinsker-type upper bound is proposed by [D. Russo and B. V. Roy](https://www.jmlr.org/papers/volume17/14-087/14-087.pdf).
+                - Daniel Russo and Benjamin Van Roy, ''An Information-Theoretic Analysis of Thompson Sampling'', *Journal of Machine Learning Research*, Vol. 17, No. 68, pp. 1 -- 30, 2016.
+        - Although `error_stability_criterion_lambert` is used in our article, we recommend `error_stability_criterion` in practice since the pinsker-type upper bound is more tight than lamber-type upper bound. 
+    - `check_threshold` calculates the error ratio and determines stopping timing.
+    - `calcR_min` calculates the minimum value of KL-divergence and the function does not affect the stopping timing.
 
 
 - GP regression
-    - GPはscikit learnのGaussian process regressorで実装されているが以下の理由でGaussian process regressorを継承したクラスをcore.GPRに定義し，それを用いている．
-    - このコードではGPのノイズの分散も周辺尤度最大化できるようにするためにwhiteカーネルが加算されていることを前提としており，Gaussian process regressorのalphaはalpha=0に設定している．
-    - scikit learnのコードではノイズの分散をwhiteカーネルとして計算する場合，事後分散にノイズが加わる．そのため，ハイパラの最適化とノイズなしの予測分布の推定を両立できないため，ノイズなしの予測分布を計算する関数を追加している．
+    - GP is implemented by using Gaussian process regressor of scikit-learn, but it is slightly modified, which is placed to `core.GPR`.
+        - In order to estimate the noise variance as with other hyperparameters, we assumes that the kernel of GP is added white kernel and alpha of Gaussian process regressor is set to zero.
+        - In scikit-learn, a covariance of GP posterior is added the noise variance when the noise variance is calculated as white kernel. So, we added `predict_noiseless` function to predict a noiseless posterior.
 
 ## License
 The source code is licensed GNU General Public License v3.0,see LICENSE.

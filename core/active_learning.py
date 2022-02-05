@@ -7,13 +7,13 @@ import warnings
 
 
 class AL(object):
-    def __init__(self, X_pool, y_pool, init_sample_size, stopping_criteria, kernel, acq_func_type="max_var", isEarlystopping=False, normalize_y=False,
+    def __init__(self, pool_data, init_sample_size, stopping_criteria, kernel, acq_func_type="max_var", isEarlystopping=False, normalize_y=False,
                  optimizer=None, n_restarts_optimizer=0, copy_X_train=False, max_iter=2e05,random_state=None):
         self.gp_params = {"kernel": kernel, "alpha": 0, "optimizer": optimizer,
                           "n_restarts_optimizer": n_restarts_optimizer, "normalize_y": normalize_y,
                           "copy_X_train": copy_X_train, "max_iter": max_iter, "random_state": None}
-        self.X_pool = X_pool
-        self.y_pool = y_pool
+        self.X_pool = pool_data[0]
+        self.y_pool = pool_data[1]
         self.init_sample_size = init_sample_size
         self.pool_size = self.X_pool.shape[0]
         [self.sampled_indecies, self.pool_indecies] = utils.get_init_samples(init_sample_size, self.pool_size)

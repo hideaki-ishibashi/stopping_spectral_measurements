@@ -41,7 +41,7 @@ def main():
         # calculate active learning
         params = np.loadtxt(param_dir + "params.txt")
         kernel = params[0] * RBF(length_scale=params[1]) + WhiteKernel(noise_level=params[2])
-        al = AL(X_train, y_train, init_sample_size, stopping_criteria, kernel=kernel)
+        al = AL([X_train, y_train], init_sample_size, stopping_criteria, kernel=kernel)
         # kernel = 1 * RBF(length_scale=1) + WhiteKernel(noise_level=0.1)
         # al = AL(X_train, y_train, init_sample_size, [error_stability], isEarlystopping=True, kernel=kernel,
         #         optimizer="fmin_l_bfgs_b", max_iter=10, n_restarts_optimizer=2)
