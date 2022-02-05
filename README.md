@@ -2,7 +2,7 @@
 
 This is the code for our paper [Automated stopping criterion for spectral measurements with active learning](https://www.nature.com/articles/s41524-021-00606-5)
 
-Please cite us:
+When you use this code in your publication, please cite the above paper as
 ```
 @article{ueno2021,
     author={Ueno,T. and Ishibashi,H. and Hino,H. and Ono,K.},
@@ -86,14 +86,14 @@ pip install -r requirements.txt
         - Possible value of `acq_func_type` is `"max_var"` or `"adaptive"`. When `acq_func_type="max_var"`, the acquisition function becomes maximum variance criterion. When `acq_func_type="adaptive"`, the acqusition function becomes the adaptive acquisition function used for our article. Other than that, next sample is selected randomly.
     - Active learning is executed by `explore`, whose argument is pre-determined budget.
     - In our code, the hyperparameter of GP can be estimated as a option, but we recommend using predetermined hyperparameter since this method tends to make the stop timing unstable.
-        - KL divergence between GPs with different hyperparameters cannot be calculated exactly. So we calculate an approximated KL-divergence instead of the exact KL-divergence. Specifically, let <img src="https://latex.codecogs.com/svg.image?\theta_t" title="\theta_t" /> and <img src="https://latex.codecogs.com/svg.image?p_t(f&space;|&space;\rho)" title="p_t(f | \rho)" /> be a hyperparamter of GP posterior at time t and GP posterior with hyperparameter <img src="https://latex.codecogs.com/svg.image?\rho" title="\rho" /> at time t, respectively. In our code, we calculate <img src="https://latex.codecogs.com/svg.image?D_{\rm&space;KL}[p_t(f|\rho_t)||p_{t-1}(f|\rho_t)]" title="D_{\rm KL}[p_t(f|\rho_t)||p_{t-1}(f|\rho_t)]" /> and <img src="https://latex.codecogs.com/svg.image?D_{\rm&space;KL}[p_{t-1}(f|\rho_t)||p_t(f|\rho_t)]" title="D_{\rm KL}[p_{t-1}(f|\rho_t)||p_t(f|\rho_t)]" /> instead of <img src="https://latex.codecogs.com/svg.image?D_{\rm&space;KL}[p_t(f|\rho_t)||p_{t-1}(f|\rho_{t-1})]" title="D_{\rm KL}[p_t(f|\rho_t)||p_{t-1}(f|\rho_{t-1})]" /> and <img src="https://latex.codecogs.com/svg.image?D_{\rm&space;KL}[p_{t-1}(f|\rho_{t-1})||p_t(f|\rho_t)]" title="D_{\rm KL}[p_{t-1}(f|\rho_{t-1})||p_t(f|\rho_t)]" />.
+        - KL divergence between GPs with different hyperparameters cannot be calculated exactly. So we calculate an approximated KL-divergence instead of the exact KL-divergence. Specifically, let $\theta_t$ and $p_t(f | \rho)$ be a hyperparamter of GP posterior at time $t$ and GP posterior with hyperparameter $\rho$ at time $t$, respectively. In our code, we calculate $D_{\rm KL}[p_t(f|\rho_t)||p_{t-1}(f|\rho_t)]$ and $D_{\rm KL}[p_{t-1}(f|\rho_t)||p_t(f|\rho_t)]$ instead of $D_{\rm KL}[p_t(f|\rho_t)||p_{t-1}(f|\rho_{t-1})]$ and $D_{\rm KL}[p_{t-1}(f|\rho_{t-1})||p_t(f|\rho_t)]$.
 
 - Stopping criterion
     - The implemented stopping criteria are `error_stability_criterion` and `error_stability_criterion_lambert`.
-        - The difference of the two criteria is the upper bound of the gap between expected generalization errors. While `error_stability_criterion_lambert` calculates the upper bound by using the lambert function, `error_stability_criterion` calculates the upper bound by using Pinsker's inequality.
+        - The difference of the two criteria is how the upper bound of the gap between expected generalization errors is evaluated. While `error_stability_criterion_lambert` calculates the upper bound by using the lambert function, `error_stability_criterion` calculates the upper bound by using Pinsker's inequality.
             - Pinsker-type upper bound is proposed by [D. Russo and B. V. Roy](https://www.jmlr.org/papers/volume17/14-087/14-087.pdf).
                 - Daniel Russo and Benjamin Van Roy, ''An Information-Theoretic Analysis of Thompson Sampling'', *Journal of Machine Learning Research*, Vol. 17, No. 68, pp. 1 -- 30, 2016.
-        - Although `error_stability_criterion_lambert` is used in our article, we recommend `error_stability_criterion` in practice since the pinsker-type upper bound is more tight than lamber-type upper bound. 
+        - Although `error_stability_criterion_lambert` is used in our article, we recommend `error_stability_criterion` in practice since the pinsker-type upper bound is tighter than lamber-type upper bound. 
     - `check_threshold` calculates the error ratio and determines stopping timing.
     - `calcR_min` calculates the minimum value of KL-divergence and the function does not affect the stopping timing.
 
