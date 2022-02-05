@@ -42,14 +42,17 @@ def main():
             t_list.append(st)
             label = "Data size = {}\n".format(st + init_sample_size) + "(" + criterion.name + ")"
             label_list.append(label)
+        plt.figure(fig1.number)
         for i, t in enumerate(t_list):
-            plot_results.draw_pred_model(axes[i], al, node, t, y_range, label_list[i], x_label, y_label)
+            plot_results.draw_pred_model(axes[i], al, node, t, y_range, label_list[i], x_label, y_label, False, True)
         fig1.tight_layout()
         fig1.savefig(save_dir + "fitting_" + data_name + ".pdf")
         plt.pause(0.001)
+        plt.figure(fig2.number)
         plot_results.draw_test_error(ax2, al, test_error, diff_test_error)
         fig2.savefig(save_dir + "test_error_" + data_name + ".pdf")
         plt.pause(0.001)
+        plt.figure(fig3.number)
         plot_results.draw_error_ratio(ax3, al)
         fig3.savefig(save_dir + "error_ratio_" + data_name + ".pdf")
         plt.pause(0.001)

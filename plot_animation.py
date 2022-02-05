@@ -16,7 +16,8 @@ def main():
     for i, data_name in enumerate(data_names):
         save_dir = "result/" + data_name + "/"
         os.makedirs(save_dir, exist_ok=True)
-        save_name = save_dir + "AL_experiment.dat"
+        save_name = save_dir + "AL_example.dat"
+        # save_name = save_dir + "AL_experiment.dat"
         sample_size = 200
 
         X_test = np.loadtxt(save_dir + "X_test.txt")[:, None]
@@ -33,7 +34,7 @@ def main():
         # draw result
         for t in range(1,sample_size+1):
             title = "Data size = {0}\n".format(t + al.init_sample_size)
-            plot_results.draw_pred_model(ax1, al, node, t, y_range, title, x_label, y_label)
+            plot_results.draw_pred_model(ax1, al, node, t, y_range, title, x_label, y_label, True, True)
             plot_results.draw_test_error(ax2, al, test_error, diff_test_error, t)
             plot_results.draw_error_ratio(ax3, al, t)
             plt.tight_layout()

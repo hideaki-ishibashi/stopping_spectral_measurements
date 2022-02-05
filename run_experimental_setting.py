@@ -37,18 +37,17 @@ def main():
         # set stopping criterion
         threshold = 0.1
         validate_size = 10
-        n_type = "actual"
-        error_stability1 = error_stability_criterion_lambert(threshold, validate_size, n_type)
+        error_stability1 = error_stability_criterion_lambert(threshold, validate_size)
         threshold = 0.05
-        error_stability2 = error_stability_criterion_lambert(threshold, validate_size, n_type)
+        error_stability2 = error_stability_criterion_lambert(threshold, validate_size)
         threshold = 0.025
-        error_stability3 = error_stability_criterion_lambert(threshold, validate_size, n_type)
+        error_stability3 = error_stability_criterion_lambert(threshold, validate_size)
         stopping_criteria = [error_stability1, error_stability2, error_stability3]
 
         # calculate active learning
         params = np.loadtxt(param_dir + "params.txt")
         kernel = params[0] * RBF(length_scale=params[1]) + WhiteKernel(noise_level=params[2])
-        al = AL(X_train, y_train, init_sample_size, stopping_criteria, kernel=kernel, optimizer=None)
+        al = AL(X_train, y_train, init_sample_size, stopping_criteria, acq_func_type="adaptive", kernel=kernel)
         al.explore(max_iters=sample_size)
 
         # set a stop timing to budget when the stopping criterion does not stop the AL

@@ -30,7 +30,6 @@ class GPR(GaussianProcessRegressor):
             raise ValueError("Unknown optimizer %s." % self.optimizer)
         return theta_opt, func_min
 
-
     def predict_noiseless(self, X, return_std=False, return_cov=False):
         # sklearnのgpではノイズまで含めた事後分布推定をしているため，ノイズを除去した予測を定義
         # 実装はsklearnのGPregressorのpredictの分散，標準偏差の計算を修正したものになっている
@@ -76,7 +75,6 @@ class GPR(GaussianProcessRegressor):
                 noise_var = self.get_noise_level()
 
                 y_cov = self.kernel_(X) - V.T @ V - noise_var*np.eye(X.shape[0])
-
 
                 y_cov = np.outer(y_cov, self._y_train_std ** 2).reshape(
                     *y_cov.shape, -1
