@@ -66,7 +66,7 @@ pip install -r requirements.txt
 - `utils`
     - utilities for accessing to dataset and result, plotting results and calculating some statistics are defined.
 - `dataset`
-    - spectrum dataset are placed.
+    - spectrum dataset are placed. spectrum data in /dataset/simulation/ are calculated using CTM4XAS [E. Stavitski and F.M.F. de Groot, Micron 41, 687 (2010)].
 - `param`
     - hyperparameter of GP caclulated by `calc_hyper_param.py` are placed.
 
