@@ -36,9 +36,10 @@ def main():
         for criterion in al.stopping_criteria:
             title = "Data size = {0}\n".format(criterion.stop_timings + init_sample_size) + "(" + criterion.name + ")"
             st = int(criterion.stop_timings)
-            plot_results.draw_pred_model(ax1, al, node, st, y_range, title, x_label, y_label)
+            plot_results.draw_pred_model(ax1, al, node, st, y_range, title, x_label, y_label, False, True)
         title = "Data size = {0}\n".format(sample_size + init_sample_size)
-        plot_results.draw_pred_model(ax3, al, node, y_range=y_range, title=title, x_label=x_label, y_label=y_label)
+        plot_results.draw_pred_model(ax3, al, node, y_range=y_range, title=title, x_label=x_label, y_label=y_label,
+                                     plotCurrentData=False, isLegend=True)
         plot_results.draw_test_error(ax2, al, test_error, diff_test_error)
         plot_results.draw_error_ratio(ax4, al)
         plt.tight_layout()
