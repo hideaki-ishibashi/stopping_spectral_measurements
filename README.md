@@ -15,7 +15,7 @@ When you use this code in your publication, please cite the above paper as
 ```
 
 ## Installation
-Our code uses the following packages:
+Our code uses Python3.10.2 and the following packages:
 - cycler          0.11.0
 - fonttools       4.29.1
 - joblib          1.1.0
@@ -39,10 +39,12 @@ Our code uses the following packages:
 - tqdm            4.62.3
 
 
-If you use poetry, you can install the packages by running:
+If you use poetry and pyenv, you can install the packages by running:
 ```
+pyenv install 3.10.2
 git clone https://github.com/hideaki-ishibashi/stopping_spectral_measurements.git
 cd stopping_spectral_measurements
+poetry env use ~/.pyenv/versions/3.10.2/bin/python
 poetry install
 ```
 Otherwise, you can install the packages by running:
