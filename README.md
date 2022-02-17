@@ -10,7 +10,7 @@ When you use this code in your publication, please cite the above paper as
     title={Automated stopping criterion for spectral measurements with active learning},
     journal={npj Computational Materials},
     volume={7},
-    number={1},
+    number={139},
 }
 ```
 
